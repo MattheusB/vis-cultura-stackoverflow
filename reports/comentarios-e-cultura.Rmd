@@ -10,7 +10,6 @@ theme: sandstone
 library(tidyverse)
 library(here)
 library(viridis)
-source(here::here("code/lib.R"))
 theme_set(theme_bw())
 
 knitr::opts_chunk$set(tidy = FALSE,
@@ -33,6 +32,9 @@ dados = read_csv(
     )
 ) %>% 
     filter(usuarios > 200)
+
+dadosFiltrados <- dados %>% 
+    filter(!is.na(Internet), !is.na(usuarios), !is.na(comentaram_prop), !is.na(six_regions))
 glimpse(dados)
 ```
 
@@ -44,10 +46,85 @@ Considerando essa variável, queremos examinar a relação entre ela e o quão h
 
 Faça uma visualização que usa os princípios de eficácia no projeto de visualizações para facilitar as comparações que você acha que são as mais importantes para entendermos esse contexto. 
 
+
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(x = PDI, y = comentaram_prop, color = Internet, size = usuarios)) +
+    geom_point(alpha = .6) +
+    facet_grid(~site) + 
+    labs(x = "Índice de Hierarquia nas Relações (PDI)", y = "Comentários proporcionais de cada país (%)", title = "Relação entre PDI e Proporção de comentários.") + 
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r echo=TRUE}
+correlacoesPDI <- dadosFiltrados %>% 
+    summarise(pearson = cor(PDI, comentaram_prop, method = "pearson", use = "pairwise.complete.obs"),
+              kendall = cor(PDI, comentaram_prop, method = "kendall", use = "pairwise.complete.obs"),
+              spearman = cor(PDI, comentaram_prop, method = "spearman", use = "pairwise.complete.obs"))
+correlacoesPDI
+```
+
+```{r echo=TRUE}
+correlacoesInternet <- dadosFiltrados %>% 
+    summarise(pearson = cor(Internet, comentaram_prop, method = "pearson", use = "pairwise.complete.obs"),
+              kendall = cor(Internet, comentaram_prop, method = "kendall", use = "pairwise.complete.obs"),
+              spearman = cor(Internet, comentaram_prop, method = "spearman", use = "pairwise.complete.obs"))
+correlacoesInternet
+```
+
+```{r echo=TRUE}
+correlacoesUsuarios <- dadosFiltrados %>% 
+    summarise(pearson = cor(usuarios, comentaram_prop, method = "pearson", use = "pairwise.complete.obs"),
+              kendall = cor(usuarios, comentaram_prop, method = "kendall", use = "pairwise.complete.obs"),
+              spearman = cor(usuarios, comentaram_prop, method = "spearman", use = "pairwise.complete.obs"))
+correlacoesUsuarios
+```
+
 ## Outras formas de ver
 
 Em seguida, faça 5 visualizações que usem as mesmas variáveis e também pontos, mas que sejam **menos eficazes** que a que você escolheu acima. 
 
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(fill=usuarios, x = country, y = PDI)) +
+    geom_bar(position = "dodge", stat="identity") +
+    theme(axis.text.x = element_text(angle = 90)) +
+    labs(x = "Países", y = "Índice de Hierarquia nas Relações (PDI)", title = "Relação entre PDI e Países") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+dadosFiltrados %>% 
+    ggplot(aes(color = comentaram_prop, size = PDI, x = Internet, y = usuarios)) +
+    geom_point() +
+    labs(x = "Internet", y = "Usuários", title = "Relação entre acesso a Internet e quantidade de Usuários") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(x = PDI, y = comentaram_prop, color = usuarios, size = Internet)) +
+    geom_point() +
+    facet_grid(site ~ four_regions) +
+    labs(x = "Índice de Hierarquia nas Relações (PDI)", y = "Comentários proporcionais de cada país (%)", title = "Relação entre PDI e Comentários") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(x = comentaram_prop, y = PDI, alpha = Internet, size = usuarios, color = country)) +
+    geom_point() +
+    labs(x = "Comentários proporcionais de cada país (%)", y = "Índice de Hierarquia nas Relações (PDI)", title = "Relação entre Comentários e PDI.") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(x = comentaram_prop, y = PDI)) +
+    geom_line() +
+    geom_point(aes(color = Internet, size = usuarios), alpha = .6) +
+    labs(x = "Comentários proporcionais de cada país (%)", y = "Índice Hierarquico nas Relações (PDI)", title = "Relação entre Comentários e PDI") +
+    theme(plot.title = element_text(hjust = 0.5))
+```
 ## Bônus
 
 Inclua o continente dos países (`six_regions`) na visualização.
