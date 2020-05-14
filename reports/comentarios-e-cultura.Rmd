@@ -46,6 +46,7 @@ Considerando essa variável, queremos examinar a relação entre ela e o quão h
 
 Faça uma visualização que usa os princípios de eficácia no projeto de visualizações para facilitar as comparações que você acha que são as mais importantes para entendermos esse contexto. 
 
+Para analisar a relação entre a participação de usuários através de comentários e o quão hierárquicas são as relações em um país (PDI), quantidade de pessoas que tem acesso à internet de cada país e por fim o tamanho da base de dados de usuários de cada nação. Por isso, foi decidido que é necessário utilizar todos essas variáveis para resultar em algo confiável, além de utilizar princípios de eficácia na visualização.
 
 ```{r}
 dadosFiltrados %>% 
@@ -56,6 +57,9 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Pela visualização acima, podemos visualizar que que há uma relação entre o índice de comentários proporcionais por país e o PDI, aparentemente quanto maior é o o índice de comentários menor é o PDI. Para concluir com mais confiança, será calculado as correlações de Person, Kendall e Spearman entre essas duas variáveis.
+
+
 ```{r echo=TRUE}
 correlacoesPDI <- dadosFiltrados %>% 
     summarise(pearson = cor(PDI, comentaram_prop, method = "pearson", use = "pairwise.complete.obs"),
@@ -63,6 +67,11 @@ correlacoesPDI <- dadosFiltrados %>%
               spearman = cor(PDI, comentaram_prop, method = "spearman", use = "pairwise.complete.obs"))
 correlacoesPDI
 ```
+
+Os resultados acima confirmar as afirmações anteriores. Mostra as correlações de Pearson (-0.65), Kendall (-0.48) e Spearman (-0.66) negativas médias, concluindo em uma relação negativa, ou seja, quanto maior o índice de comentários menor é o PDI.
+
+
+Analisando a relação entre as variáveis de índice de comentários e acesso à internet através do gráfico pode-se observar que quanto maior o índice de acesso á internet,maior também é a porporção de comentários. Isso fica claro no gráfico que a maioria dos pontos que está acima de 0.3 tem a cor mais clara que indica que tem um maior índice de acesso a internet. Calculando a correlação dessas duas variáveis, temos:
 
 ```{r echo=TRUE}
 correlacoesInternet <- dadosFiltrados %>% 
@@ -72,6 +81,11 @@ correlacoesInternet <- dadosFiltrados %>%
 correlacoesInternet
 ```
 
+Ao contrário da relação Comentários x PDI, a relação entre o índice de comentários e o índice de acesso a internet é uma relação positiva média, pois todos as correlações calculadas deram positivas entre 0.4 e 0.7, como pode ser visto acima. Isso quer dizer que quanto maior o índice comentários, maior vai ser o índice de acesso à internet do país analisado.
+
+
+Partindo para a última análise de relação entre variáveis foi escolhido a relação entre índice de comentários e quantidade de usuários. Observando o gráfico, dá para perceber que essa relação segue mais ou menos a mesma linha da relação Comentários x Internet. No entanto, percebe-se que não é uam relação tão forte, pois no gráfico deixa claro exemplos de países que têm um número grande de usuários e não têm um índice grande de comentários e vice-versa. Por isso, é necessário analisar os coeficientes de correlações para concluir algo mais confiável.
+
 ```{r echo=TRUE}
 correlacoesUsuarios <- dadosFiltrados %>% 
     summarise(pearson = cor(usuarios, comentaram_prop, method = "pearson", use = "pairwise.complete.obs"),
@@ -79,6 +93,10 @@ correlacoesUsuarios <- dadosFiltrados %>%
               spearman = cor(usuarios, comentaram_prop, method = "spearman", use = "pairwise.complete.obs"))
 correlacoesUsuarios
 ```
+
+Os resultados das correlações deram menor que 0.3. Por isso, é possível afirmar que a relação entre índice de comentários e quantidade de usuários é uma relação bem fraca e positiva. Quase não há relação entre essas duas variáveis, devido ao fato de que os resultados se aproximam bastante de zero.
+
+Uma observação a ser feita é que a quantidade de dados do site SuperUser é significativamente menor que a quantidade de dados vindos do StackOverFlow, sendo assim, o gráfico do StackOverFlow pode ser mais mais representativo.
 
 ## Outras formas de ver
 
@@ -122,10 +140,21 @@ dadosFiltrados %>%
     ggplot(mapping = aes(x = comentaram_prop, y = PDI)) +
     geom_line() +
     geom_point(aes(color = Internet, size = usuarios), alpha = .6) +
-    labs(x = "Comentários proporcionais de cada país (%)", y = "Índice Hierarquico nas Relações (PDI)", title = "Relação entre Comentários e PDI") +
+    labs(x = "Comentários proporcionais de cada país (%)", y = "Índice de Hierarquia nas Relações (PDI)", title = "Relação entre Comentários e PDI") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
+
 ## Bônus
 
 Inclua o continente dos países (`six_regions`) na visualização.
+
+```{r}
+dadosFiltrados %>% 
+    ggplot(mapping = aes(x = comentaram_prop, y = PDI, color = Internet, size = usuarios)) + 
+    geom_point(alpha = .6) +
+    labs(x = "Comentários proporcionais de cada país (%)", y = "Índice de Hierarquia nas Relações (PDI)", title = 
+             "Relação entre Comentários e PDI com as seis regiões") + 
+    facet_wrap(~six_regions) + 
+    theme(plot.title = element_text(hjust = 0.5))
+```
 
