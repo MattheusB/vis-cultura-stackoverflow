@@ -111,6 +111,8 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+O gráfico de barras acima é menos eficiente devido ao fato de dificultar a visualização pelos dados não estarem ordenados. Além disso os nome dos país ficam bem próximos, dificultando a identificação e utiliza poucas variáveis para a análise (apenas PDI e número de usuários).
+
 ```{r}
 dadosFiltrados %>% 
     ggplot(aes(color = comentaram_prop, size = PDI, x = Internet, y = usuarios)) +
@@ -118,6 +120,8 @@ dadosFiltrados %>%
     labs(x = "Internet", y = "Usuários", title = "Relação entre acesso a Internet e quantidade de Usuários") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
+
+A visualização acima é menos eficiente porque os pontos sobrepõem os outros, dificultando assim o entendimento do gráfico. Sendo assim, não dá para concluir muita coisa apenas observando o gráfico acima.
 
 ```{r}
 dadosFiltrados %>% 
@@ -128,6 +132,8 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Análisando o gráfico acima, conclui-se que ele é menos eficiente que o primeiro gráfico plotado por causa que não há uma boa variação de cor dos pontos e temos um número pequeno da variação do tamanho dos pontos. Além de que novamente temos um gráfico sobreposto, dificultando assim o entendimento principal do gráfico. 
+
 ```{r}
 dadosFiltrados %>% 
     ggplot(mapping = aes(x = comentaram_prop, y = PDI, alpha = Internet, size = usuarios, color = country)) +
@@ -135,6 +141,10 @@ dadosFiltrados %>%
     labs(x = "Comentários proporcionais de cada país (%)", y = "Índice de Hierarquia nas Relações (PDI)", title = "Relação entre Comentários e PDI.") +
     theme(plot.title = element_text(hjust = 0.5))
 ```
+
+A escolha da coloração por país deixa o gráfico menos eficaz devido ao grande número de nações, sendo assim, foi separado uma cor para cada país resultando em uma confusão, pois além de ser muitas cores elas são bem parecidas.
+
+
 ```{r}
 dadosFiltrados %>% 
     ggplot(mapping = aes(x = comentaram_prop, y = PDI)) +
@@ -144,9 +154,13 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Acima vemos um gráfico menos eficiente pelo motivo de misturar um gráfico de pontos com um gráfico de linhas, gerando uma sobreposição em alguns casos, além de que a variação do PDI é grande em alguns casos, deixando o gráfico "rabiscado".
+
 ## Bônus
 
 Inclua o continente dos países (`six_regions`) na visualização.
+
+Adicionando a o continente dos países mencionados anteriormente, temos:
 
 ```{r}
 dadosFiltrados %>% 
@@ -158,3 +172,10 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
+Analisando o gráfico acima percebe-se que na Europa e Ásia Central há uma grande quantidade de países e com um índice elevado de acesso à internet, além de ter um grande índice de comentários proporcionais (grande maioria acima de 0.2).
+
+Analisando o Sul da Ásia observa-se uma grande quantidade de usuários com um PDI elevado (acima de 50 em todos os casos), mas com um índice de comentários baixo. Uma observação é o número elevado de usuários em um país em específico e um índice pequeno de acesso à internet.
+
+Já o caso da África subsaariana registra o menor índice de comentários (abaixo de 0.1) e o resto da região da África tem dados bem divididos, como um país que tenha um PDI elevado mas um índice de comentários baixo. Assim como, tem também um índice de comentários elevado e um PDI muito baixo (menor registrado). Em ambas as regiões, o número de usuários é baixo.
+
+No Pacífico da Ásia, pode-se destacar o índice elevado de PDI. Por fim, a América registou o maior número de usuários em um único páis, com um índice de acesso à internet elevado em alguns país e outros com o índice bem baixo.
