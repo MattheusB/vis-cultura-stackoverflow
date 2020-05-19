@@ -10,6 +10,7 @@ theme: sandstone
 library(tidyverse)
 library(here)
 library(viridis)
+library(rsconnect)
 theme_set(theme_bw())
 
 knitr::opts_chunk$set(tidy = FALSE,
@@ -46,7 +47,7 @@ Considerando essa variável, queremos examinar a relação entre ela e o quão h
 
 Faça uma visualização que usa os princípios de eficácia no projeto de visualizações para facilitar as comparações que você acha que são as mais importantes para entendermos esse contexto. 
 
-Para analisar a relação entre a participação de usuários através de comentários e o quão hierárquicas são as relações em um país (PDI), quantidade de pessoas que tem acesso à internet de cada país e por fim o tamanho da base de dados de usuários de cada nação. Por isso, foi decidido que é necessário utilizar todos essas variáveis para resultar em algo confiável, além de utilizar princípios de eficácia na visualização.
+Para analisar a relação entre a participação de usuários através de comentários e o quão hierárquicas são as relações em um país (PDI), quantidade de pessoas que tem acesso à internet de cada país e por fim o tamanho da base de dados de usuários de cada nação é necessário utilizar todos essas variáveis para resultar em algo confiável, além de utilizar princípios de eficácia na visualização.
 
 ```{r}
 dadosFiltrados %>% 
@@ -57,7 +58,7 @@ dadosFiltrados %>%
     theme(plot.title = element_text(hjust = 0.5))
 ```
 
-Pela visualização acima, podemos visualizar que que há uma relação entre o índice de comentários proporcionais por país e o PDI, aparentemente quanto maior é o o índice de comentários menor é o PDI. Para concluir com mais confiança, será calculado as correlações de Person, Kendall e Spearman entre essas duas variáveis.
+Pela visualização acima, podemos visualizar que que há uma relação entre o índice de comentários proporcionais por país e o PDI, aparentemente quanto maior é o o índice de comentários, menor é o PDI. Para concluir com mais confiança, será calculado as correlações de Person, Kendall e Spearman entre essas duas variáveis.
 
 
 ```{r echo=TRUE}
@@ -68,7 +69,7 @@ correlacoesPDI <- dadosFiltrados %>%
 correlacoesPDI
 ```
 
-Os resultados acima confirmar as afirmações anteriores. Mostra as correlações de Pearson (-0.65), Kendall (-0.48) e Spearman (-0.66) negativas médias, concluindo em uma relação negativa, ou seja, quanto maior o índice de comentários menor é o PDI.
+Os resultados acima confirma as afirmações anteriores. Mostra as correlações de Pearson (-0.65), Kendall (-0.48) e Spearman (-0.66) com relações negativas medianas, ou seja, quanto maior o índice de comentários menor é o PDI.
 
 
 Analisando a relação entre as variáveis de índice de comentários e acesso à internet através do gráfico pode-se observar que quanto maior o índice de acesso á internet,maior também é a porporção de comentários. Isso fica claro no gráfico que a maioria dos pontos que está acima de 0.3 tem a cor mais clara que indica que tem um maior índice de acesso a internet. Calculando a correlação dessas duas variáveis, temos:
